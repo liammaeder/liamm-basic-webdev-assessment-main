@@ -9,7 +9,6 @@ try {
     $pathCount = count($path);
     //logMsg($requestType);
 
-
     error_log($requestType);
 
     $controller = new TodoController();
@@ -21,7 +20,6 @@ try {
                 $todo = $controller->load($id);
                 if ($todo) {
                     http_response_code(200);
-                    fclose($log);
                     die(json_encode($todo));
                 }
                 http_response_code(404);
@@ -34,14 +32,32 @@ try {
         case 'POST':
             //implement your code here
             $data = json_decode($body);
-            $todo = new Todo($data->id, $data->title, $data->description, $data->done);
-            die(json_encode($controller->create($todo)));
+            if($data){
+                http_response_code(200);
+                $todo = new Todo($data->id, $data->title, $data->description, $data->done);
+                $controller->create($todo);
+                die();
+            } else {
+                http_response_code(500);
+                die();
+            }
             break;
         case 'PUT':
             //implement your code here
             break;
         case 'DELETE':
             //implement your code here
+            $data = json_decode($body);
+            error_log("DELETE: ".$data->id);
+            if($data){
+                http_response_code(200);
+                $id = $data->id;
+                $controller->delete($id);
+                die();
+            } else {
+                http_response_code(500);
+                die();
+            }
             break;
         default:
             http_response_code(501);
@@ -52,10 +68,4 @@ try {
     error_log($e->getMessage());
     http_response_code(500);
     die();
-}
-
-function logMsg($msg) {
-    fopen(window.location.href + 'logs/log_msg.txt', 'w+');
-    fwrite(window.location.href + 'logs/log_msg.txt', $msg);
-    fclose(window.location.href + 'logs/log_msg.txt');
 }

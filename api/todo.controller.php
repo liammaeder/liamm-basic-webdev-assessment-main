@@ -54,6 +54,20 @@ class TodoController {
 
     public function delete(string $id) : bool {
         // implement your code here
+        $jsonFile = file_get_contents(self::PATH);
+        $dataArray = json_decode($jsonFile);
+        if(!json_last_error()){
+            foreach($dataArray as $key => $data){
+                if($data->id == $id){
+                    unset($dataArray[$key]);
+                }
+            }
+
+            $jsonFile = json_encode($dataArray, JSON_PRETTY_PRINT);
+            file_put_contents(self::PATH, $jsonFile);
+        } else {
+            return false;
+        }
         return true;
     }
 
