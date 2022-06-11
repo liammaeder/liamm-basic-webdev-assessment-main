@@ -34,20 +34,16 @@ class TodoController {
 
     public function create(Todo $todo) : bool {
         // implement your code here
-        consoleLog("Reached the php function");
-        $content = file_get_contents(self::PATH);
-        if ($content === false) {
-            throw new Exception(self::PATH . " does not exist");
-        }  
-        consoleLog("Got the file content");
-        $dataArray = json_decode($content);
+        $jsonFile = file_get_contents(self::PATH);
+        $dataArray = json_decode($jsonFile);
+        $newTodo = $this->toArray($todo);
         if (!json_last_error()) {
-            $dataArray[] = $todo->toArray();
-            $content = json_encode($dataArray);
-            file_put_contents(self::PATH, $content);
+            $dataArray[] = $newTodo;
+            $jsonFile = json_encode($dataArray, JSON_PRETTY_PRINT);
+            file_put_contents(self::PATH, $jsonFile);
+        } else {
+            return false;
         }
-        consoleLog("Processed Succesfully");
-
         return true;
     }
 
@@ -62,8 +58,13 @@ class TodoController {
     }
 
     // add any additional functions you need below
-    function consoleLog($msg) {
-		echo '<script type="text/javascript">' .
-          'console.log(' . $msg . ');</script>';
-	}
+    public function toArray(Todo $todo) : array {
+        $array = array (
+            "id" => $todo->id,
+            "title" => $todo->title,
+            "description" => $todo->description,
+            "done" => $todo->done
+        );
+        return $array;
+    }
 }

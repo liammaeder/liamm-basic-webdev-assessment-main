@@ -6,7 +6,12 @@ function putTodo(todo) {
 
 function postTodo(todo) {
     // implement your code here
-    fetch(window.location.href + 'api/todo')    
+    let options = {
+        method: 'POST',
+        headers: {"Content-type": "application/json"},
+        body: JSON.stringify(todo)
+    };
+    fetch(window.location.href + 'api/todo', options)    
     .then(response => response.json())
     .then(json => console.log(json))
     .catch(error => showToastMessage('Failed to create todo...'));

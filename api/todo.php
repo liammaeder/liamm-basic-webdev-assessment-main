@@ -7,6 +7,10 @@ try {
     $requestType = $_SERVER['REQUEST_METHOD'];
     $body = file_get_contents('php://input');
     $pathCount = count($path);
+    //logMsg($requestType);
+
+
+    error_log($requestType);
 
     $controller = new TodoController();
     
@@ -17,6 +21,7 @@ try {
                 $todo = $controller->load($id);
                 if ($todo) {
                     http_response_code(200);
+                    fclose($log);
                     die(json_encode($todo));
                 }
                 http_response_code(404);
@@ -28,8 +33,8 @@ try {
             break;
         case 'POST':
             //implement your code here
-            consoleLog("Reached the first POST ");
-            $todo = json_decode($body);
+            $data = json_decode($body);
+            $todo = new Todo($data->id, $data->title, $data->description, $data->done);
             die(json_encode($controller->create($todo)));
             break;
         case 'PUT':
@@ -49,7 +54,8 @@ try {
     die();
 }
 
-function consoleLog($msg) {
-    echo '<script type="text/javascript">' .
-      'console.log(' . $msg . ');</script>';
+function logMsg($msg) {
+    fopen(window.location.href + 'logs/log_msg.txt', 'w+');
+    fwrite(window.location.href + 'logs/log_msg.txt', $msg);
+    fclose(window.location.href + 'logs/log_msg.txt');
 }
