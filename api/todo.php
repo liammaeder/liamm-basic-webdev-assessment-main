@@ -28,6 +28,9 @@ try {
             break;
         case 'POST':
             //implement your code here
+            consoleLog("Reached the first POST ");
+            $todo = json_decode($body);
+            die(json_encode($controller->create($todo)));
             break;
         case 'PUT':
             //implement your code here
@@ -44,4 +47,9 @@ try {
     error_log($e->getMessage());
     http_response_code(500);
     die();
+}
+
+function consoleLog($msg) {
+    echo '<script type="text/javascript">' .
+      'console.log(' . $msg . ');</script>';
 }
