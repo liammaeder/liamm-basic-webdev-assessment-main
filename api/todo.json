@@ -1,44 +1,20 @@
-{
-    "0": {
+[
+    {
         "id": "NgoVlyDhTS",
         "title": "Make Bed",
         "description": "Use the good linen this time please",
         "done": true
     },
-    "1": {
+    {
         "id": "skHMaKsqOb",
         "title": "Pack Dishwasher",
         "description": "",
         "done": false
     },
-    "2": {
+    {
         "id": "YgnovUnGmB",
         "title": "Wash Dishes",
         "description": "Hand wash the Royal Albert tea set",
         "done": false
-    },
-    "3": {
-        "id": "UfPxHlDqdn",
-        "title": "test",
-        "description": "",
-        "done": false
-    },
-    "5": {
-        "id": "tXNvgKmKjy",
-        "title": "Another test",
-        "description": "",
-        "done": false
-    },
-    "6": {
-        "id": "RMgvgBoQBI",
-        "title": "one last one",
-        "description": "",
-        "done": false
-    },
-    "7": {
-        "id": "JLVXOIrWdd",
-        "title": "Last one",
-        "description": "I promise",
-        "done": false
     }
-}
+]
