@@ -7,9 +7,6 @@ try {
     $requestType = $_SERVER['REQUEST_METHOD'];
     $body = file_get_contents('php://input');
     $pathCount = count($path);
-    //logMsg($requestType);
-
-    error_log($requestType);
 
     $controller = new TodoController();
     
@@ -35,8 +32,7 @@ try {
             if($data){
                 http_response_code(200);
                 $todo = new Todo($data->id, $data->title, $data->description, $data->done);
-                $controller->create($todo);
-                die();
+                die(json_encode($controller->create($todo)));
             } else {
                 http_response_code(500);
                 die();
@@ -44,16 +40,24 @@ try {
             break;
         case 'PUT':
             //implement your code here
+            $data = json_decode($body);
+            if($data){
+                http_response_code(200);
+                $id = $data->id;
+                $todo = new Todo($data->id, $data->title, $data->description, $data->done);
+                die(json_encode($controller->update($id, $todo)));
+            } else {
+                http_response_code(500);
+                die();
+            }
             break;
         case 'DELETE':
             //implement your code here
             $data = json_decode($body);
-            error_log("DELETE: ".$data->id);
             if($data){
                 http_response_code(200);
                 $id = $data->id;
-                $controller->delete($id);
-                die();
+                die(json_encode($controller->delete($id)));
             } else {
                 http_response_code(500);
                 die();

@@ -34,41 +34,87 @@ class TodoController {
 
     public function create(Todo $todo) : bool {
         // implement your code here
+
+        // Read the json file info
         $jsonFile = file_get_contents(self::PATH);
         $dataArray = json_decode($jsonFile);
+
+        // Convert the Todo to an array
         $newTodo = $this->toArray($todo);
+
+        // Errorhandling
         if (!json_last_error()) {
+            // Add the new Todo to the array and write to the json file
             $dataArray[] = $newTodo;
             $jsonFile = json_encode($dataArray, JSON_PRETTY_PRINT);
             file_put_contents(self::PATH, $jsonFile);
+            return true;
         } else {
             return false;
         }
-        return true;
+        
     }
 
     public function update(string $id, Todo $todo) : bool {
-        // implement your code here
-        return true;
+        // implement your code here// Read data from Json and decode it
+        $json = file_get_contents(self::PATH);
+        $data = json_decode($json, true);
+
+        // Errorhandling
+        if(!json_last_error()) {
+            // update the item in the array
+            foreach($data as $key => $item) {
+                if ($item['id'] == $id) {
+                    $data[$key] = $this->toArray($todo);
+                }
+            }
+
+            // remove the keys from the array
+            $new_data = array();
+            foreach($data as $item) {
+                $new_data[] = $this->arrayCleaner($item);
+            }
+
+            // Encode the array and write it to the json file
+            $json = json_encode($new_data, JSON_PRETTY_PRINT);
+            file_put_contents(self::PATH, $json);
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function delete(string $id) : bool {
         // implement your code here
-        $jsonFile = file_get_contents(self::PATH);
-        $dataArray = json_decode($jsonFile);
-        if(!json_last_error()){
-            foreach($dataArray as $key => $data){
-                if($data->id == $id){
-                    unset($dataArray[$key]);
+
+        // Read data from Json and decode it
+        $json = file_get_contents(self::PATH);
+        $data = json_decode($json, true);
+
+        // Errorhandling
+        if(!json_last_error()) {
+            // delete the item from the array
+            foreach($data as $key => $item) {
+                if ($item['id'] == $id) {
+                    unset($data[$key]);
                 }
             }
 
-            $jsonFile = json_encode($dataArray, JSON_PRETTY_PRINT);
-            file_put_contents(self::PATH, $jsonFile);
+            // remove the keys from the array
+            $new_data = array();
+            foreach($data as $item) {
+                $new_data[] = $this->arrayCleaner($item);
+            }
+
+            // Encode the array and write it to the json file
+            $json = json_encode($new_data, JSON_PRETTY_PRINT);
+            file_put_contents(self::PATH, $json);
+
+            return true;
         } else {
             return false;
         }
-        return true;
     }
 
     // add any additional functions you need below
@@ -80,5 +126,11 @@ class TodoController {
             "done" => $todo->done
         );
         return $array;
+    }
+
+    public function arrayCleaner(array $array) : array {
+        $todo = new Todo($array['id'], $array['title'], $array['description'], $array['done']);
+        $todo = $this->toArray($todo);
+        return $todo;
     }
 }
